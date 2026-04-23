@@ -146,6 +146,20 @@ Dataset used:
 
 
 
+\## 🌐 Live Demo
+
+
+
+🚧 Coming soon (deployment in progress)
+
+
+
+> ⚠️ In medical AI, minimizing false negatives is critical.
+
+> This model achieves \~96% recall on Pneumonia cases, reducing missed diagnoses.
+
+
+
 \## 🚀 Future Improvements
 
 
@@ -157,6 +171,20 @@ Dataset used:
 \- Deploy app online
 
 \- Improve generalization
+
+
+
+\## 🧠 Key Learnings
+
+
+
+\- Built an end-to-end ML pipeline from data loading to deployment
+
+\- Learned transfer learning using ResNet18
+
+\- Understood importance of recall in medical AI
+
+\- Deployed model using Streamlit for real-time inference
 
 
 
