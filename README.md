@@ -90,9 +90,13 @@ This project demonstrates an end-to-end machine learning pipeline:
 
 
 
-!\[App Screenshot](screenshot.png)
+!\[App Screenshot](./screenshot.png)
 
+<p align="center">
 
+&#x20; <img src="https://raw.githubusercontent.com/Abhhiiissshhek/pneumonia-detection/main/screenshot.png" width="800"/>
+
+</p>
 
 \---
 
