@@ -18,6 +18,10 @@ This project demonstrates an end-to-end machine learning pipeline:
 
 
 
+\---
+
+
+
 \## 🚀 Features
 
 
@@ -29,6 +33,10 @@ This project demonstrates an end-to-end machine learning pipeline:
 \- Real-time inference
 
 \- Simple and clean UI using Streamlit
+
+
+
+\---
 
 
 
@@ -48,6 +56,10 @@ This project demonstrates an end-to-end machine learning pipeline:
 
 
 
+\---
+
+
+
 \## 📊 Performance
 
 
@@ -64,7 +76,13 @@ This project demonstrates an end-to-end machine learning pipeline:
 
 
 
-> In medical applications, recall is critical to reduce missed pneumonia cases.
+> ⚠️ In medical AI, minimizing false negatives is critical.  
+
+> This model achieves \~96% recall on Pneumonia cases, reducing missed diagnoses.
+
+
+
+\---
 
 
 
@@ -73,6 +91,10 @@ This project demonstrates an end-to-end machine learning pipeline:
 
 
 !\[App Screenshot](screenshot.png)
+
+
+
+\---
 
 
 
@@ -88,23 +110,7 @@ cd pneumonia-detection
 
 pip install -r requirements.txt
 
-streamlit run app.py
-
-
-
-
-
-\---
-
-
-
-\# 📁 STEP 8 — PROJECT STRUCTURE
-
-
-
-```markdown
-
-\## 📂 Project Structure
+streamlit run app.py     
 
 
 
@@ -122,31 +128,19 @@ pneumonia-detection/
 
 
 
-\## 📁 Dataset
+📁 Dataset
 
+Chest X-ray dataset from Kaggle
 
+(Dataset not included due to size)
 
-Dataset used:
+⚠️ Note
 
-\- Chest X-ray dataset from Kaggle
+Model file (.pth) is not included due to size limits
 
+You can train the model using train.py
 
-
-(Note: Dataset not included due to size)
-
-
-
-\## ⚠️ Note
-
-
-
-\- Model file (`.pth`) is not included due to size limits
-
-\- You can train the model using `train.py`
-
-
-
-\## 🌐 Live Demo
+🌐 Live Demo
 
 
 
@@ -154,41 +148,27 @@ Dataset used:
 
 
 
-> ⚠️ In medical AI, minimizing false negatives is critical.
+🚀 Future Improvements
 
-> This model achieves \~96% recall on Pneumonia cases, reducing missed diagnoses.
+Reduce false negatives
 
+Add confidence score output
 
+Deploy app online
 
-\## 🚀 Future Improvements
+Improve generalization
 
+🧠 Key Learnings
 
+Built an end-to-end ML pipeline from data loading to deployment
 
-\- Reduce false negatives
+Learned transfer learning using ResNet18
 
-\- Add confidence score output
+Understood importance of recall in medical AI
 
-\- Deploy app online
+Deployed model using Streamlit for real-time inference
 
-\- Improve generalization
-
-
-
-\## 🧠 Key Learnings
-
-
-
-\- Built an end-to-end ML pipeline from data loading to deployment
-
-\- Learned transfer learning using ResNet18
-
-\- Understood importance of recall in medical AI
-
-\- Deployed model using Streamlit for real-time inference
-
-
-
-\## 👨‍💻 Author
+👨‍💻 Author
 
 
 
