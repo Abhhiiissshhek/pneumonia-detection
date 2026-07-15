@@ -205,7 +205,7 @@ Through this project, I gained hands-on experience with:
 **Abhishek Prajapati**
 
 * GitHub: https://github.com/Abhhiiissshhek
-* LinkedIn: *(Add your LinkedIn profile here)*
+* LinkedIn: https://www.linkedin.com/in/abhishekprajapati-ml
 
 ---
 
