@@ -1,180 +1,214 @@
-\# 🫁 Pneumonia Detection from Chest X-ray
+# 🫁 Pneumonia Detection from Chest X-ray
 
+An end-to-end deep learning application for detecting **Pneumonia** from chest X-ray images using a fine-tuned **ResNet18** model. The project demonstrates the complete machine learning workflow—from data preprocessing and model training to evaluation and deployment through a Streamlit web application.
 
+---
 
-A deep learning web app that detects \*\*Pneumonia\*\* from chest X-ray images using a fine-tuned ResNet18 model.
+## 📌 Overview
 
+Pneumonia is a potentially life-threatening lung infection where early diagnosis is critical. This project leverages **transfer learning** to classify chest X-ray images into one of two categories:
 
+* ✅ Normal
+* 🦠 Pneumonia
 
-This project demonstrates an end-to-end machine learning pipeline:
+The primary objective is to build an accurate and user-friendly diagnostic assistance tool while showcasing an end-to-end machine learning pipeline.
 
-\- Data loading
+---
 
-\- Model training
+## ✨ Features
 
-\- Evaluation
+* Deep learning–based binary image classification
+* Transfer learning with pretrained **ResNet18**
+* Interactive web interface built with **Streamlit**
+* Real-time inference on uploaded X-ray images
+* Clean and modular project structure
+* Easy-to-understand training and evaluation scripts
 
-\- Deployment using Streamlit
+---
 
+## 🧠 Model Architecture
 
+* **Base Model:** ResNet18 (ImageNet pretrained)
+* **Framework:** PyTorch
+* **Transfer Learning:** Fine-tuned final classification layer
+* **Output Classes:** Normal, Pneumonia
+* **Loss Function:** CrossEntropyLoss
+* **Optimizer:** Adam
 
-\---
+---
 
+## 📊 Model Performance
 
+| Metric           | Score |
+| ---------------- | ----: |
+| Accuracy         |  ~95% |
+| Pneumonia Recall |  ~96% |
+| False Negatives  |    32 |
 
-\## 🚀 Features
+> **Note:** In medical image classification, **Recall** is often more important than overall accuracy because missing a pneumonia case (false negative) can have serious clinical consequences.
 
+---
 
-
-\- Upload chest X-ray images
-
-\- Predicts \*\*Normal\*\* or \*\*Pneumonia\*\*
-
-\- Real-time inference
-
-\- Simple and clean UI using Streamlit
-
-
-
-\---
-
-
-
-\## 🧠 Model Details
-
-
-
-\- Model: ResNet18 (pretrained on ImageNet)
-
-\- Transfer Learning used
-
-\- Final layer modified for 2 classes
-
-\- Loss Function: CrossEntropyLoss
-
-\- Optimizer: Adam
-
-
-
-\---
-
-
-
-\## 📊 Performance
-
-
-
-| Metric | Value |
-
-|--------|------|
-
-| Accuracy | \~95% |
-
-| Pneumonia Recall | \~96% |
-
-| False Negatives | 32 |
-
-
-
-> ⚠️ In medical AI, minimizing false negatives is critical.  
-
-> This model achieves \~96% recall on Pneumonia cases, reducing missed diagnoses.
-
-
-
-\---
-
-
-
-\## 🖥️ Demo
-
-
-
-!\[App Screenshot](./screenshot.png)
+## 🖥️ Application Preview
 
 <p align="center">
-
-&#x20; <img src="https://raw.githubusercontent.com/Abhhiiissshhek/pneumonia-detection/main/screenshot.png" width="800"/>
-
+  <img src="./screenshot.png" alt="Application Screenshot" width="850">
 </p>
 
-\---
+---
 
+## 📁 Project Structure
 
+```text
+pneumonia-detection/
+│
+├── app.py                  # Streamlit application
+├── src/
+│   ├── data_loader.py
+│   ├── model.py
+│   ├── train.py
+│   └── evaluate.py
+│
+├── requirements.txt
+├── README.md
+└── screenshot.png
+```
 
-\## ⚙️ Installation
+---
 
+## ⚙️ Installation
 
+Clone the repository:
 
 ```bash
-
 git clone https://github.com/Abhhiiissshhek/pneumonia-detection.git
-
 cd pneumonia-detection
+```
 
+Create a virtual environment (recommended):
+
+```bash
+python -m venv .venv
+```
+
+Activate the environment:
+
+### Windows
+
+```bash
+.venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+source .venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
+```
 
-streamlit run app.py     
+Run the application:
 
+```bash
+streamlit run app.py
+```
 
+---
 
-pneumonia-detection/
+## 📂 Dataset
 
-│
+This project uses the **Chest X-ray Pneumonia Dataset** available on Kaggle.
 
-├── app.py
+> The dataset is not included in this repository due to its size and licensing restrictions.
 
-├── src/
+---
 
-├── requirements.txt
+## 🚀 Training
 
-├── README.md
+To train the model from scratch or fine-tune the network:
 
+```bash
+python src/train.py
+```
 
+After training, save the model weights and use them with the Streamlit application for inference.
 
-📁 Dataset
+---
 
-Chest X-ray dataset from Kaggle
+## 📈 Evaluation
 
-(Dataset not included due to size)
+Model evaluation includes:
 
-⚠️ Note
+* Accuracy
+* Recall
+* Confusion Matrix
+* Classification Metrics
 
-Model file (.pth) is not included due to size limits
+The evaluation script can be executed using:
 
-You can train the model using train.py
+```bash
+python src/evaluate.py
+```
 
-🌐 Live Demo
+---
 
+## ⚠️ Repository Notes
 
+* The trained `.pth` model file is **not included** because it exceeds GitHub's file size limit.
+* You can reproduce the model by training it using the provided scripts.
 
-🚧 Coming soon (deployment in progress)
+---
 
+## 🔮 Future Improvements
 
+* Confidence score for predictions
+* Grad-CAM visualizations for model explainability
+* Docker support
+* Cloud deployment
+* Model comparison (ResNet, EfficientNet, DenseNet)
+* Improved recall with advanced augmentation techniques
+* Continuous Integration (GitHub Actions)
 
-🚀 Future Improvements
+---
 
-Reduce false negatives
+## 🛠️ Tech Stack
 
-Add confidence score output
+* Python
+* PyTorch
+* TorchVision
+* Streamlit
+* NumPy
+* Pillow
+* Matplotlib
 
-Deploy app online
+---
 
-Improve generalization
+## 📚 Key Learnings
 
-🧠 Key Learnings
+Through this project, I gained hands-on experience with:
 
-Built an end-to-end ML pipeline from data loading to deployment
+* Transfer Learning
+* Medical Image Classification
+* Deep Learning using PyTorch
+* Model Evaluation and Performance Analysis
+* Building production-ready ML applications with Streamlit
+* End-to-end machine learning workflows
 
-Learned transfer learning using ResNet18
+---
 
-Understood importance of recall in medical AI
+## 👨‍💻 Author
 
-Deployed model using Streamlit for real-time inference
+**Abhishek Prajapati**
 
-👨‍💻 Author
+* GitHub: https://github.com/Abhhiiissshhek
+* LinkedIn: *(Add your LinkedIn profile here)*
 
+---
 
+## ⭐ Support
 
-Abhishek Prajapati (abhhiiissshhek\_ml)
-
+If you found this project useful, consider giving the repository a **star**. Feedback, suggestions, and contributions are always welcome.
