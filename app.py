@@ -5,9 +5,6 @@ import torchvision.transforms as transforms
 from PIL import Image
 import torchvision.models as models
 
-# ----------------------------
-# Load Model
-# ----------------------------
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = models.resnet18(weights=None)
@@ -17,9 +14,6 @@ model.load_state_dict(torch.load("model/pneumonia_model.pth", map_location=devic
 model = model.to(device)
 model.eval()
 
-# ----------------------------
-# Image Transform
-# ----------------------------
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -27,9 +21,6 @@ transform = transforms.Compose([
                          [0.229, 0.224, 0.225])
 ])
 
-# ----------------------------
-# UI
-# ----------------------------
 st.title("🫁 Pneumonia Detection from Chest X-Ray")
 st.write("Upload a chest X-ray image and get prediction")
 
