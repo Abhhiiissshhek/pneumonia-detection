@@ -5,9 +5,6 @@ import torch.optim as optim
 from data_loader import get_dataloaders
 from model import get_model
 
-# ------------------------
-# 1. Setup
-# ------------------------
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 data_dir = "../data"
@@ -19,18 +16,13 @@ model = model.to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.fc.parameters(), lr=0.001)
 
-# ------------------------
-# 2. Training config
-# ------------------------
+# Training config
+
 num_epochs = 5
 best_val_acc = 0.0
 
-# ------------------------
-# 3. Training loop
-# ------------------------
+# Training loop
 for epoch in range(num_epochs):
-
-    # -------- TRAIN --------
     model.train()
     train_loss = 0
     correct = 0
@@ -53,8 +45,6 @@ for epoch in range(num_epochs):
         total += labels.size(0)
 
     train_acc = correct / total
-
-    # -------- VALIDATION --------
     model.eval()
     val_correct = 0
     val_total = 0
@@ -75,15 +65,15 @@ for epoch in range(num_epochs):
 
     val_acc = val_correct / val_total
 
-    # -------- LOGGING --------
+  
     print(f"\nEpoch [{epoch+1}/{num_epochs}]")
     print(f"Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.4f}")
     print(f"Val Loss: {val_loss:.4f} | Val Acc: {val_acc:.4f}")
 
-    # -------- SAVE BEST MODEL --------
+   
     if val_acc > best_val_acc:
         best_val_acc = val_acc
         torch.save(model.state_dict(), "../model/pneumonia_model.pth")
-        print("💾 Best model saved!")
+        print("Best model saved!")
 
 print("\nTraining complete!")
