@@ -1,214 +1,185 @@
-# 🫁 Pneumonia Detection from Chest X-ray
+# 🫁 Pneumonia Detection from Chest X-Rays
 
-An end-to-end deep learning application for detecting **Pneumonia** from chest X-ray images using a fine-tuned **ResNet18** model. The project demonstrates the complete machine learning workflow—from data preprocessing and model training to evaluation and deployment through a Streamlit web application.
+[![CI](https://github.com/Abhhiiissshhek/pneumonia-detection/actions/workflows/ci.yml/badge.svg)](https://github.com/Abhhiiissshhek/pneumonia-detection/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-ResNet18-EE4C2C?logo=pytorch&logoColor=white)
+![Streamlit](https://img.shields.io/badge/app-Streamlit-FF4B4B?logo=streamlit&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Abhhiiissshhek/pneumonia-detection/blob/main/notebooks/train_colab.ipynb)
 
----
+An end-to-end deep learning project that classifies chest X-rays as **Normal** or **Pneumonia** using transfer learning on **ResNet18**. It explains each prediction with **Grad-CAM** and serves the model through a **Streamlit** web app.
 
-## 📌 Overview
-
-Pneumonia is a potentially life-threatening lung infection where early diagnosis is critical. This project leverages **transfer learning** to classify chest X-ray images into one of two categories:
-
-* ✅ Normal
-* 🦠 Pneumonia
-
-The primary objective is to build an accurate and user-friendly diagnostic assistance tool while showcasing an end-to-end machine learning pipeline.
-
----
-
-## ✨ Features
-
-* Deep learning–based binary image classification
-* Transfer learning with pretrained **ResNet18**
-* Interactive web interface built with **Streamlit**
-* Real-time inference on uploaded X-ray images
-* Clean and modular project structure
-* Easy-to-understand training and evaluation scripts
-
----
-
-## 🧠 Model Architecture
-
-* **Base Model:** ResNet18 (ImageNet pretrained)
-* **Framework:** PyTorch
-* **Transfer Learning:** Fine-tuned final classification layer
-* **Output Classes:** Normal, Pneumonia
-* **Loss Function:** CrossEntropyLoss
-* **Optimizer:** Adam
-
----
-
-## 📊 Model Performance
-
-| Metric           | Score |
-| ---------------- | ----: |
-| Accuracy         |  ~95% |
-| Pneumonia Recall |  ~96% |
-| False Negatives  |    32 |
-
-> **Note:** In medical image classification, **Recall** is often more important than overall accuracy because missing a pneumonia case (false negative) can have serious clinical consequences.
-
----
-
-## 🖥️ Application Preview
+It covers the whole ML lifecycle: a reproducible data pipeline, class-imbalance-aware training, honest evaluation on a held-out test set, explainability, a tested inference API, CI and Docker.
 
 <p align="center">
-  <img src="./screenshot.png" alt="Application Screenshot" width="850">
+  <img src="./screenshot.png" alt="Streamlit app" width="800">
 </p>
 
 ---
 
-## 📁 Project Structure
+## ✨ Highlights
+
+- **Transfer learning:** ImageNet-pretrained ResNet18. You can fine-tune only the head, the last residual block (default), or the whole network.
+- **Handles class imbalance:** the data is about 3:1 Pneumonia to Normal, so the loss is weighted by inverse class frequency.
+- **Recall-first decision threshold:** missing pneumonia is worse than a false alarm. Training lowers the threshold (from 0.5) until validation recall reaches a target (default 95%) and stores it in the checkpoint.
+- **No data leakage:** a stratified, seeded validation split comes from `train/`. The official `test/` set is used only for final evaluation.
+- **Explainability:** Grad-CAM heatmaps show which lung regions drove each prediction. It's implemented from scratch with PyTorch hooks.
+- **Full evaluation report:** accuracy, precision, recall (sensitivity), specificity, F1, ROC-AUC, a confusion matrix and a ROC curve.
+- **Streamlit app:** confidence score, adjustable threshold, Grad-CAM overlay and validation metrics. Weights download automatically from GitHub Releases.
+- **Engineering:** installable package, CLI tools, 19 pytest tests (including an end-to-end pipeline and app tests), GitHub Actions CI, ruff and a Dockerfile.
+
+## 📊 Results
+
+Evaluated on the **official held-out test set** (624 images: 234 Normal, 390 Pneumonia) with `python -m pneumonia.evaluate`.
+
+| Metric | Score |
+|---|---:|
+| Accuracy | _run evaluate_ |
+| Recall / sensitivity (Pneumonia) | _run evaluate_ |
+| Specificity (Normal) | _run evaluate_ |
+| Precision | _run evaluate_ |
+| F1 | _run evaluate_ |
+| ROC-AUC | _run evaluate_ |
+
+> Fill this table from `reports/metrics.json` after training. Then copy `reports/confusion_matrix.png`, `reports/roc_curve.png` and a Grad-CAM example into `docs/` and embed them here.
+>
+> **Why recall matters:** in screening, a false negative (missed pneumonia) is far more costly than a false positive, which a radiologist can quickly dismiss.
+
+## 🧠 How it works
+
+```text
+X-ray ─► Grayscale→3ch ─► Resize 224 ─► Normalize ─► ResNet18 backbone ─► Dropout ─► Linear(512→2)
+                                                        │                            │
+                                                        └── layer4 ── Grad-CAM ──┐   └── softmax ─► P(pneumonia) ≥ threshold?
+                                                                                 ▼
+                                                                         heatmap overlay
+```
+
+| Component | Choice |
+|---|---|
+| Backbone | ResNet18, ImageNet weights |
+| Trainable | `layer4` + classifier (`--finetune head\|layer4\|all`) |
+| Loss | Class-weighted cross-entropy |
+| Optimizer | AdamW (lr 3e-4, weight decay 1e-4), cosine LR schedule |
+| Augmentation | Horizontal flip, small rotation, translation and scale |
+| Model selection | Best validation ROC-AUC, early stopping (patience 3) |
+| Threshold | Lowered from 0.5 until validation recall ≥ 95% |
+
+## 📁 Project structure
 
 ```text
 pneumonia-detection/
-│
-├── app.py                  # Streamlit application
-├── src/
-│   ├── data_loader.py
-│   ├── model.py
-│   ├── train.py
-│   └── evaluate.py
-│
-├── requirements.txt
-├── README.md
-└── screenshot.png
+├── app.py                     # Streamlit web app
+├── src/pneumonia/
+│   ├── config.py              # paths, constants
+│   ├── data.py                # transforms, stratified split, loaders
+│   ├── model.py               # ResNet18 builder, legacy-checkpoint loading
+│   ├── train.py               # training CLI
+│   ├── evaluate.py            # test-set evaluation + plots
+│   ├── predict.py             # Predictor class + CLI
+│   ├── gradcam.py             # Grad-CAM implementation
+│   ├── metrics.py             # metrics, threshold selection
+│   └── utils.py               # seeding, device, checkpoint I/O
+├── tests/                     # pytest suite (synthetic data, runs on CPU in seconds)
+├── notebooks/train_colab.ipynb
+├── scripts/download_data.sh
+├── .github/workflows/ci.yml
+├── Dockerfile
+└── pyproject.toml
 ```
 
----
-
-## ⚙️ Installation
-
-Clone the repository:
+## ⚙️ Setup
 
 ```bash
 git clone https://github.com/Abhhiiissshhek/pneumonia-detection.git
 cd pneumonia-detection
-```
-
-Create a virtual environment (recommended):
-
-```bash
 python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
 ```
 
-Activate the environment:
+### Dataset
 
-### Windows
+[Chest X-Ray Images (Pneumonia)](https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia) on Kaggle, about 5,800 pediatric chest X-rays.
 
 ```bash
-.venv\Scripts\activate
+pip install kaggle               # needs ~/.kaggle/kaggle.json
+bash scripts/download_data.sh    # → data/chest_xray/{train,val,test}
 ```
 
-### Linux / macOS
+## 🚀 Usage
+
+**No GPU?** Use the [Colab notebook](notebooks/train_colab.ipynb). It downloads the data, trains, evaluates and exports the weights on a free T4 GPU in about 15 minutes.
 
 ```bash
-source .venv/bin/activate
-```
+# Train (saves models/pneumonia_resnet18.pt and reports/training_history.json)
+python -m pneumonia.train --epochs 10
 
-Install dependencies:
+# Evaluate on the held-out test set (writes reports/metrics.json + plots)
+python -m pneumonia.evaluate
 
-```bash
-pip install -r requirements.txt
-```
+# Predict on images, optionally saving a Grad-CAM overlay
+python -m pneumonia.predict path/to/xray.jpeg --gradcam gradcam.png
 
-Run the application:
-
-```bash
+# Web app
 streamlit run app.py
 ```
 
----
+Run `python -m pneumonia.train --help` to see every option (learning rate, fine-tuning mode, target recall, device and more).
 
-## 📂 Dataset
+Use it from Python:
 
-This project uses the **Chest X-ray Pneumonia Dataset** available on Kaggle.
+```python
+from PIL import Image
+from pneumonia.predict import Predictor
 
-> The dataset is not included in this repository due to its size and licensing restrictions.
-
----
-
-## 🚀 Training
-
-To train the model from scratch or fine-tune the network:
-
-```bash
-python src/train.py
+predictor = Predictor("models/pneumonia_resnet18.pt")
+pred = predictor.predict(Image.open("xray.jpeg"))
+print(pred.label, pred.pneumonia_probability)
+predictor.gradcam(Image.open("xray.jpeg")).save("cam.png")
 ```
 
-After training, save the model weights and use them with the Streamlit application for inference.
+## 🌐 Deployment
 
----
+The trained checkpoint (~45 MB) is not committed. Publish it as an asset named `pneumonia_resnet18.pt` on a [GitHub Release](https://github.com/Abhhiiissshhek/pneumonia-detection/releases). If no local weights exist, the app downloads them from the latest release on startup. You can override this with the `MODEL_PATH` or `MODEL_URL` environment variables.
 
-## 📈 Evaluation
+- **Streamlit Community Cloud:** point it at `app.py`. It installs `requirements.txt`.
+- **Docker:**
+  ```bash
+  docker build -t pneumonia-detection .
+  docker run -p 8501:8501 pneumonia-detection
+  ```
 
-Model evaluation includes:
-
-* Accuracy
-* Recall
-* Confusion Matrix
-* Classification Metrics
-
-The evaluation script can be executed using:
+## 🧪 Tests
 
 ```bash
-python src/evaluate.py
+pytest          # 19 tests, ~10 s on CPU
+ruff check .
 ```
 
----
+The tests generate a small synthetic dataset, so they need neither the real data nor a GPU. They cover:
+- the data split (stratified, disjoint and reproducible)
+- model freezing and legacy-checkpoint loading
+- the metrics and threshold logic
+- a full train → evaluate → predict → Grad-CAM run
+- the Streamlit app, with and without a model
 
-## ⚠️ Repository Notes
+## ⚠️ Limitations
 
-* The trained `.pth` model file is **not included** because it exceeds GitHub's file size limit.
-* You can reproduce the model by training it using the provided scripts.
+- The dataset is pediatric (ages 1–5) from a single hospital in Guangzhou, so the model may not generalize to adults or other scanners.
+- The official validation split has only 16 images, so a split carved out of `train/` is used instead.
+- This is an educational project, **not a medical device**.
 
----
+## 🔮 Future work
 
-## 🔮 Future Improvements
-
-* Confidence score for predictions
-* Grad-CAM visualizations for model explainability
-* Docker support
-* Cloud deployment
-* Model comparison (ResNet, EfficientNet, DenseNet)
-* Improved recall with advanced augmentation techniques
-* Continuous Integration (GitHub Actions)
-
----
-
-## 🛠️ Tech Stack
-
-* Python
-* PyTorch
-* TorchVision
-* Streamlit
-* NumPy
-* Pillow
-* Matplotlib
-
----
-
-## 📚 Key Learnings
-
-Through this project, I gained hands-on experience with:
-
-* Transfer Learning
-* Medical Image Classification
-* Deep Learning using PyTorch
-* Model Evaluation and Performance Analysis
-* Building production-ready ML applications with Streamlit
-* End-to-end machine learning workflows
-
----
+- Compare against DenseNet121 and EfficientNet-B0
+- Bacterial vs viral pneumonia (3-class)
+- Test-time augmentation and probability calibration
+- External validation on another dataset (e.g. RSNA Pneumonia Detection)
 
 ## 👨‍💻 Author
 
-**Abhishek Prajapati**
+**Abhishek Prajapati**, BS Data Science, IIT Madras
+[GitHub](https://github.com/Abhhiiissshhek) · [LinkedIn](https://www.linkedin.com/in/abhishekprajapati-ml)
 
-* GitHub: https://github.com/Abhhiiissshhek
-* LinkedIn: https://www.linkedin.com/in/abhishekprajapati-ml
-
----
-
-## ⭐ Support
-
-If you found this project useful, consider giving the repository a **star**. Feedback, suggestions, and contributions are always welcome.
+Licensed under the [MIT License](LICENSE).

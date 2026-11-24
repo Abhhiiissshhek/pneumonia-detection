@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pneumonia-detection"
+version = "1.0.0"
+description = "Pneumonia detection from chest X-rays with a fine-tuned ResNet18, Grad-CAM and a Streamlit app"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Abhishek Prajapati" }]
+dependencies = [
+    "torch>=2.2",
+    "torchvision>=0.17",
+    "numpy>=1.26",
+    "pillow>=10.0",
+    "scikit-learn>=1.4",
+    "matplotlib>=3.8",
+    "streamlit>=1.36",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+pneumonia-train = "pneumonia.train:main"
+pneumonia-evaluate = "pneumonia.evaluate:main"
+pneumonia-predict = "pneumonia.predict:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

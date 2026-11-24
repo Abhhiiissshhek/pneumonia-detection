@@ -1,13 +1,22 @@
-venv/
+# Python
 __pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+venv/
+.venv/
 
-# Data
+# Data (download separately, see scripts/download_data.sh)
 data/
 
-# Models
-model/*.pth
+# Trained weights (publish via GitHub Releases instead)
+models/*.pt
+models/*.pth
+model/
 
-# Images
-*.png
-*.jpg
-*.jpeg
+# Generated reports, except the curated copies under docs/
+reports/
+
+.DS_Store
+.streamlit/secrets.toml
